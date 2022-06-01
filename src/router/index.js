@@ -9,7 +9,14 @@ const routes = [
 		name: 'home',
 		component: () => import('@/views/home/Home.vue'),
 		props: true,
-		meta: { title: 'REDDIT-CLIENT | Home' },
+		meta: { title: 'R-C | Home' },
+	},
+	{
+		path: '/settings',
+		name: 'settings',
+		component: () => import('@/views/settings/Settings.vue'),
+		props: true,
+		meta: { title: 'R-C | Settings' },
 	},
 ];
 
