@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import API from '@/api/api.js';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+	if (localStorage.getItem('refresh_token') !== null) {
+		API.refreshToken(localStorage.getItem('refresh_token'));
+	}
+
 	document.title = to.meta.title;
 	next();
 });
