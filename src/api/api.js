@@ -7,14 +7,46 @@ const auth = {
 	password: process.env.VUE_APP_SECRET,
 };
 
+const headers = {
+	'Content-Type': 'application/x-www-form-urlencoded',
+};
+
 const API = {
+	getRequest(url) {
+		return axios.get('https://oauth.reddit.com/' + url, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+			},
+		});
+	},
+	getRequests(urls) {
+		const requests = [];
+		urls.map((element) => {
+			requests.push(
+				axios.get(element, {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+					},
+				})
+			);
+		});
+
+		return axios.all(requests, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+			},
+		});
+	},
 	authorizeReddit() {
 		window.location.replace(
 			'https://www.reddit.com/api/v1/authorize?client_id=' +
 				process.env.VUE_APP_CLIENT_ID +
 				'&response_type=code&state=1&redirect_uri=' +
 				process.env.VUE_APP_REDIRECT_URI +
-				'&duration=permanent&scope=identity'
+				'&duration=permanent&scope=identity read wikiread vote'
 		);
 	},
 	getAccessToken(code) {
@@ -26,9 +58,7 @@ const API = {
 					'&redirect_uri=' +
 					process.env.VUE_APP_REDIRECT_URI,
 				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
+					headers,
 					auth,
 				}
 			)
@@ -36,13 +66,13 @@ const API = {
 				localStorage.clear();
 				localStorage.setItem('access_token', response.data.access_token);
 				localStorage.setItem('refresh_token', response.data.refresh_token);
-				store.state.hasToken = true;
+				store.state.tokenStatus = 1;
 
 				router.push('settings');
 			})
 			.catch(function (error) {
 				localStorage.clear();
-				store.state.hasToken = false;
+				store.state.tokenStatus = 2;
 
 				console.log(error);
 			});
@@ -53,20 +83,18 @@ const API = {
 				'https://www.reddit.com/api/v1/access_token',
 				'grant_type=refresh_token&refresh_token=' + token,
 				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
+					headers,
 					auth,
 				}
 			)
 			.then(function (response) {
 				localStorage.setItem('access_token', response.data.access_token);
 				localStorage.setItem('refresh_token', response.data.refresh_token);
-				store.state.hasToken = true;
+				store.state.tokenStatus = 1;
 			})
 			.catch(function (error) {
 				localStorage.clear();
-				store.state.hasToken = false;
+				store.state.tokenStatus = 2;
 
 				console.log(error);
 			});

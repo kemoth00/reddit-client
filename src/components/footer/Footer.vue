@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col items-center jusify-center text-xs">
 		<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
-		<div>© 2022 reddit, inc. All rights reserved.</div>
+		<div>© 2022 szabotamas, inc. All rights reserved.</div>
 	</div>
 </template>
 

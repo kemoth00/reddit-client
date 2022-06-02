@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import API from '@/api/api.js';
+import store from '@/store';
 
 Vue.use(VueRouter);
 
@@ -28,12 +29,22 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+	document.title = to.meta.title;
+
 	if (localStorage.getItem('refresh_token') !== null) {
 		API.refreshToken(localStorage.getItem('refresh_token'));
-	}
 
-	document.title = to.meta.title;
-	next();
+		next();
+	} else {
+		if (store.state.tokenStatus == 1) {
+			store.state.tokenStatus = 2;
+		}
+		if (to.name !== 'settings') {
+			next('settings');
+		} else {
+			next();
+		}
+	}
 });
 
 export default router;

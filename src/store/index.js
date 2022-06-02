@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		hasToken: false,
+		tokenStatus: 0,
 	},
 	getters: {},
 	mutations: {},

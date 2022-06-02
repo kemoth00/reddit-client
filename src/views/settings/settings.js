@@ -15,7 +15,7 @@ export default {
 			API.authorizeReddit();
 		},
 	},
-	mounted() {
+	created() {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 
