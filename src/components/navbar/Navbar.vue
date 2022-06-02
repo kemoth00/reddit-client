@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<nav class="bg-white shadow-lg text-base">
+		<nav class="bg-white shadow-md text-base">
 			<div class="mx-auto px-4">
 				<div class="flex justify-between">
 					<div class="flex w-52 h-20 items-center justify-start">

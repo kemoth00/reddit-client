@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col w-1/4 h-fit px-8 text-lg">
 		<div
-			class="py-1 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
+			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
 			:class="{ 'text-orange-500': currentTopic == 'hot' }"
 			v-on:click="emitTopicChanged('hot')"
 		>
@@ -65,7 +65,7 @@
 			<span>Hot</span>
 		</div>
 		<div
-			class="py-1 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
+			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
 			:class="{ 'text-orange-500': currentTopic == 'new' }"
 			v-on:click="emitTopicChanged('new')"
 		>
@@ -175,7 +175,7 @@
 			<span>New</span>
 		</div>
 		<div
-			class="py-1 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
+			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
 			:class="{ 'text-orange-500': currentTopic == 'rising' }"
 			v-on:click="emitTopicChanged('rising')"
 		>
@@ -212,7 +212,7 @@
 			<span>Rising</span>
 		</div>
 		<div
-			class="py-1 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
+			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
 			:class="{ 'text-orange-500': currentTopic == 'top' }"
 			v-on:click="emitTopicChanged('top')"
 		>
