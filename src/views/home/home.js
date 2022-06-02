@@ -1,17 +1,31 @@
 import API from '@/api/api.js';
 import axios from 'axios';
+import TopicSelector from '@/components/topicselector/Topicselector.vue';
 
 export default {
 	name: 'Home',
 	props: {},
 	computed: {},
 	data() {
-		return {};
+		return {
+			topicResponses: [],
+			topics: ['hot', 'new', 'rising', 'top'],
+			currentTopic: 'hot',
+			responsesLoaded: false,
+		};
 	},
 	components: {
 		API,
+		TopicSelector,
 	},
-	methods: {},
+	methods: {
+		loadTopic(data) {
+			this.currentTopic = data;
+		},
+		processTopic() {
+			console.log(this.topicResponses[0][this.currentTopic]);
+		},
+	},
 	created() {
 		const urls = [
 			'https://oauth.reddit.com/hot',
@@ -23,7 +37,15 @@ export default {
 		API.getRequests(urls)
 			.then(
 				axios.spread((...responses) => {
-					console.log(responses);
+					let myObj = {};
+
+					responses.map((element, index) => {
+						myObj[this.topics[index]] = element.data.data;
+					});
+
+					this.topicResponses.push(myObj);
+
+					this.responsesLoaded = true;
 				})
 			)
 			.catch((errors) => {
@@ -31,5 +53,13 @@ export default {
 			});
 	},
 	destroyed() {},
-	watch: {},
+	watch: {
+		currentTopic: function () {
+			this.processTopic();
+		},
+
+		responsesLoaded: function () {
+			this.processTopic();
+		},
+	},
 };

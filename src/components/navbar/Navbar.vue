@@ -1,18 +1,18 @@
 <template>
 	<div>
-		<nav class="bg-white shadow-lg text-sm">
+		<nav class="bg-white shadow-lg text-base">
 			<div class="mx-auto px-4">
 				<div class="flex justify-between">
-					<div class="flex w-52 h-12 items-center justify-start">
+					<div class="flex w-52 h-20 items-center justify-start">
 						<!-- Website Logo -->
 						<router-link :to="{ name: 'home' }">
 							<img src="@/assets/logo.svg" class="h-8" alt="Reddit Logo" />
 						</router-link>
 					</div>
 					<!-- Primary Navbar items -->
-					<div class="hidden md:flex w-52 h-12 items-center justify-center">
+					<div class="hidden md:flex w-52 h-20 items-center justify-center">
 						<router-link
-							class="py-3.5 px-2 text-gray-700 font-semibold hover:text-orange-500 transition duration-300"
+							class="py-7 px-2 text-gray-700 font-semibold hover:text-orange-500 transition duration-300"
 							:class="{ 'innerborder-orange': currentRouteName == 'home' }"
 							aria-current="page"
 							:to="{ name: 'home' }"
@@ -20,9 +20,9 @@
 							HOME
 						</router-link>
 					</div>
-					<div class="hidden md:flex w-52 h-12 items-center justify-end">
+					<div class="hidden md:flex w-52 h-20 items-center justify-end">
 						<router-link
-							class="py-3.5 px-2 text-gray-700 font-semibold hover:text-orange-500 transition duration-300"
+							class="py-7 px-2 text-gray-700 font-semibold hover:text-orange-500 transition duration-300"
 							:class="{ 'innerborder-orange': currentRouteName == 'settings' }"
 							:to="{ name: 'settings' }"
 						>

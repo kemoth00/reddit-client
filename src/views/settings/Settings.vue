@@ -1,8 +1,12 @@
 <template>
-	<div class="flex flex-col items-center">
+	<div class="flex flex-col items-center text-2xl">
 		<button
 			class="bg-white text-gray-800 font-bold py-2 px-4 inline-flex items-center shadow-xl"
-			:class="this.$store.state.tokenStatus !== 1 ? 'hover:bg-orange-500' : ''"
+			:class="
+				this.$store.state.tokenStatus !== 1
+					? 'hover:bg-orange-500 transition duration-300'
+					: ''
+			"
 			v-on:click="authorize"
 			:disabled="this.$store.state.tokenStatus === 1"
 		>
@@ -109,7 +113,7 @@
 				</g>
 			</svg>
 		</button>
-		<div class="text-xs mt-10 shadow-2xl px-6 py-6 bg-white">
+		<div class="text-xs mt-10 shadow-2xl px-6 py-6 bg-white text-sm">
 			1. Mindenek előtt kattints a "Connect Reddit Account" gombra<br />
 			2. Kattints a felugró oldalon az "Allow" gombra<br />
 			3.1 Ha nem történt hiba a "Connect Reddit Account" gombra kerül egy pipa
