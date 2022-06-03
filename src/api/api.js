@@ -20,6 +20,14 @@ const API = {
 			},
 		});
 	},
+	getTopic(url, options) {
+		return axios.get(url + options, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+			},
+		});
+	},
 	getRequests(urls) {
 		const requests = [];
 		urls.map((element) => {

@@ -1,6 +1,8 @@
 import API from '@/api/api.js';
-import axios from 'axios';
+// import axios from 'axios';
 import TopicSelector from '@/components/topicselector/Topicselector.vue';
+import store from '@/store';
+import router from '@/router';
 
 export default {
 	name: 'Home',
@@ -8,6 +10,7 @@ export default {
 	computed: {},
 	data() {
 		return {
+			timeLeft: 20,
 			topicResponses: [],
 			topics: ['hot', 'new', 'rising', 'top'],
 			currentTopic: 'hot',
@@ -16,6 +19,13 @@ export default {
 			refreshTimer: null,
 			windowInterval: null,
 			intervalLoaded: false,
+			urls: [
+				'https://oauth.reddit.com/hot',
+				'https://oauth.reddit.com/new',
+				'https://oauth.reddit.com/rising',
+				'https://oauth.reddit.com/top',
+			],
+			fetchLoaded: false,
 		};
 	},
 	components: {
@@ -29,47 +39,38 @@ export default {
 				: Math.sign(num) * Math.abs(num);
 		},
 		fetchRequests() {
-			const urls = [
-				'https://oauth.reddit.com/hot',
-				'https://oauth.reddit.com/new',
-				'https://oauth.reddit.com/rising',
-				'https://oauth.reddit.com/top',
-			];
+			this.timeLeft = 20;
+			let that = this;
+			this.refreshTimer = setInterval(function () {
+				if (that.timeLeft > 0) {
+					document.getElementById('countdown').innerHTML =
+						that.timeLeft + ' seconds remaining until refresh';
+				}
+				that.timeLeft -= 1;
+			}, 1000);
 
-			API.getRequests(urls)
-				.then(
-					axios.spread((...responses) => {
-						let myObj = {};
+			this.topicResponses = [];
+			for (let i = 0; i < this.urls.length; i++) {
+				if (this.currentTopic == this.topics[i]) {
+					API.getTopic(this.urls[i], '')
+						.then((response) => {
+							this.topicResponses.push(response.data.data);
 
-						responses.map((element, index) => {
-							myObj[this.topics[index]] = element.data.data;
-						});
-
-						this.topicResponses.push(myObj);
-
-						if (this.responsesLoaded == true) {
-							this.processTopic();
-						}
-
-						this.responsesLoaded = true;
-
-						var timeleft = 20;
-						this.refreshTimer = setInterval(function () {
-							if (timeleft <= 0) {
-								clearInterval(this.refreshTimer);
-							} else {
-								document.getElementById('countdown').innerHTML =
-									timeleft + ' seconds remaining until refresh';
+							if (this.responsesLoaded == true) {
+								this.processTopic();
 							}
-							timeleft -= 1;
-						}, 1000);
 
-						this.intervalLoaded = true;
-					})
-				)
-				.catch((errors) => {
-					console.log(errors);
-				});
+							this.responsesLoaded = true;
+							this.intervalLoaded = true;
+						})
+						.catch(function (error) {
+							localStorage.clear();
+							store.state.tokenStatus = 2;
+
+							console.log(error);
+						});
+				}
+			}
 		},
 		loadTopic(data) {
 			this.currentTopic = data;
@@ -77,7 +78,7 @@ export default {
 		processTopic() {
 			this.posts = [];
 
-			this.topicResponses[0][this.currentTopic].children.map((element) => {
+			this.topicResponses[0].children.map((element) => {
 				let myObj = {};
 
 				myObj['id'] = element.data.id;
@@ -85,10 +86,15 @@ export default {
 				myObj['num_comments'] = element.data.num_comments;
 				myObj['thumbnail'] =
 					element.data.thumbnail == 'self' ||
-					element.data.thumbnail == 'default'
+					element.data.thumbnail == 'default' ||
+					element.data.thumbnail == 'nsfw' ||
+					element.data.thumbnail == 'image'
 						? 'default.jpg'
 						: element.data.thumbnail;
-				myObj['title'] = element.data.title;
+				myObj['title'] =
+					element.data.title.length > 100
+						? element.data.title.slice(0, 100) + '...'
+						: element.data.title;
 				myObj['ups'] = element.data.ups;
 				myObj['url'] = element.data.url;
 				myObj['selftext'] =
@@ -98,29 +104,56 @@ export default {
 						  '...';
 
 				this.posts.push(myObj);
+
+				this.fetchLoaded = true;
 			});
 
 			//console.log(this.posts);
 		},
 	},
 	created() {
+		this.fetchLoaded = false;
 		this.fetchRequests();
 
 		this.windowInterval = setInterval(() => {
+			clearInterval(this.refreshTimer);
+			this.refreshTimer = null;
+
 			this.fetchRequests();
 		}, 20000);
 	},
 	beforeDestroy() {
 		clearInterval(this.refreshTimer);
 		clearInterval(this.windowInterval);
+		this.refreshTimer = null;
+		this.windowInterval = null;
 	},
 	watch: {
 		currentTopic: function () {
-			this.processTopic();
+			this.fetchLoaded = false;
+			clearInterval(this.refreshTimer);
+			clearInterval(this.windowInterval);
+			this.refreshTimer = null;
+			this.windowInterval = null;
+
+			this.fetchRequests();
+
+			this.windowInterval = setInterval(() => {
+				clearInterval(this.refreshTimer);
+				this.refreshTimer = null;
+
+				this.fetchRequests();
+			}, 20000);
 		},
 
 		responsesLoaded: function () {
 			this.processTopic();
+		},
+
+		'$store.state.tokenStatus': function () {
+			if (this.$store.state.tokenStatus == 2) {
+				router.push('settings');
+			}
 		},
 	},
 };
