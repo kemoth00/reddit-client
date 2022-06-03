@@ -1,7 +1,8 @@
 <template>
 	<div class="flex flex-row">
-		<TopicSelector @TopicChanged="loadTopic" />
-		<div class="w-1/2" v-show="fetchLoaded">
+		<TopicSelector @TopicChanged="loadTopic" :horizontal="false" />
+		<div class="md:w-1/2 w-full" v-show="fetchLoaded">
+			<TopicSelector @TopicChanged="loadTopic" :horizontal="true" />
 			<div
 				id="countdown"
 				class="bg-white shadow-md p-4 text-center"
@@ -10,8 +11,10 @@
 				20 seconds remaining until refresh
 			</div>
 			<div v-for="item in posts" :key="item.id">
-				<div class="flex flex-row bg-white my-1 h-52 min-h-min shadow-md p-4">
-					<div class="flex flex-col w-3/4 mr-10">
+				<div
+					class="flex flex-row bg-white my-1 h-64 md:h-52 min-h-min shadow-md p-4"
+				>
+					<div class="flex flex-col w-11/12 md:w-3/4 md:mr-10">
 						<div class="h-1/4">
 							<span class="pr-3">{{ item.author }}</span>
 							<span>1 hours ago</span>
@@ -276,7 +279,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="flex flex-col w-1/4">
+					<div class="flex flex-col w-1/4 hidden md:flex">
 						<div class="h-1/4">
 							<svg
 								width="20px"
@@ -338,7 +341,7 @@
 							/>
 						</div>
 					</div>
-					<div class="flex flex-col w-20">
+					<div class="flex flex-col w-6 md:w-20">
 						<div class="h-2/5 relative text-center">
 							<svg
 								width="24px"
@@ -380,7 +383,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-1/2 text-center" v-show="!fetchLoaded">
+		<div class="w-full md:w-1/2 text-center" v-show="!fetchLoaded">
 			<svg
 				role="status"
 				class="inline w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-orange-500"
@@ -398,7 +401,7 @@
 				/>
 			</svg>
 		</div>
-		<div class="w-1/4"></div>
+		<div class="md:w-1/4"></div>
 	</div>
 </template>
 

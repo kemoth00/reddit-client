@@ -52,7 +52,7 @@ export default {
 			this.topicResponses = [];
 			for (let i = 0; i < this.urls.length; i++) {
 				if (this.currentTopic == this.topics[i]) {
-					API.getTopic(this.urls[i], '')
+					API.getTopic(this.urls[i], '?limit=' + localStorage.getItem('limit'))
 						.then((response) => {
 							this.topicResponses.push(response.data.data);
 

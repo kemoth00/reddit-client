@@ -1,8 +1,18 @@
 <template>
-	<div class="flex flex-col w-1/4 h-fit px-8 text-lg">
+	<div
+		class="flex h-fit px-8 text-lg"
+		:class="
+			horizontal
+				? 'flex-row justify-center md:hidden'
+				: 'flex-col w-1/4 hidden md:flex'
+		"
+	>
 		<div
 			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
-			:class="{ 'text-orange-500': currentTopic == 'hot' }"
+			:class="{
+				'text-orange-500': currentTopic == 'hot',
+				'mx-4 mb-2': horizontal,
+			}"
 			v-on:click="emitTopicChanged('hot')"
 		>
 			<svg
@@ -66,7 +76,10 @@
 		</div>
 		<div
 			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
-			:class="{ 'text-orange-500': currentTopic == 'new' }"
+			:class="{
+				'text-orange-500': currentTopic == 'new',
+				'mx-4  mb-2': horizontal,
+			}"
 			v-on:click="emitTopicChanged('new')"
 		>
 			<svg
@@ -176,7 +189,10 @@
 		</div>
 		<div
 			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
-			:class="{ 'text-orange-500': currentTopic == 'rising' }"
+			:class="{
+				'text-orange-500': currentTopic == 'rising',
+				'mx-4  mb-2': horizontal,
+			}"
 			v-on:click="emitTopicChanged('rising')"
 		>
 			<svg
@@ -213,7 +229,10 @@
 		</div>
 		<div
 			class="py-2 hover:fill-orange-500 hover:text-orange-500 transition duration-300 cursor-pointer"
-			:class="{ 'text-orange-500': currentTopic == 'top' }"
+			:class="{
+				'text-orange-500': currentTopic == 'top',
+				'mx-4  mb-2': horizontal,
+			}"
 			v-on:click="emitTopicChanged('top')"
 		>
 			<svg

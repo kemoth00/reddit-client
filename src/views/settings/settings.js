@@ -5,7 +5,9 @@ export default {
 	props: {},
 	computed: {},
 	data() {
-		return {};
+		return {
+			saveSuccess: false,
+		};
 	},
 	components: {
 		API,
@@ -13,6 +15,14 @@ export default {
 	methods: {
 		authorize() {
 			API.authorizeReddit();
+		},
+		saveParams() {
+			localStorage.setItem(
+				'limit',
+				document.getElementById('numOfItems').value
+			);
+
+			this.saveSuccess = true;
 		},
 	},
 	created() {
@@ -22,7 +32,20 @@ export default {
 		if (urlParams.has('code')) {
 			API.getAccessToken(urlParams.get('code'));
 		}
+
+		if (localStorage.getItem('limit') == null) {
+			localStorage.setItem('limit', 10);
+		}
+	},
+	mounted() {
+		document.getElementById('numOfItems').value = localStorage.getItem('limit');
 	},
 	destroyed() {},
-	watch: {},
+	watch: {
+		saveSuccess: function () {
+			setTimeout(() => {
+				this.saveSuccess = false;
+			}, 3000);
+		},
+	},
 };

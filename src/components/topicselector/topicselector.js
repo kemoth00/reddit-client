@@ -1,6 +1,10 @@
+import store from '@/store';
+
 export default {
 	name: 'Topicselector',
-	props: {},
+	props: {
+		horizontal: Boolean,
+	},
 	computed: {},
 	data() {
 		return {
@@ -10,11 +14,16 @@ export default {
 	components: {},
 	methods: {
 		emitTopicChanged(topic) {
+			store.state.currentTopic = topic;
 			this.currentTopic = topic;
 			this.$emit('TopicChanged', topic);
 		},
 	},
-	created() {},
+	mounted() {},
 	destroyed() {},
-	watch: {},
+	watch: {
+		'$store.state.currentTopic': function () {
+			this.currentTopic = store.state.currentTopic;
+		},
+	},
 };
