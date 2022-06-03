@@ -10,15 +10,11 @@ export default {
 	computed: {},
 	data() {
 		return {
-			timeLeft: 20,
 			topicResponses: [],
 			topics: ['hot', 'new', 'rising', 'top'],
 			currentTopic: 'hot',
 			responsesLoaded: false,
 			posts: [],
-			refreshTimer: null,
-			windowInterval: null,
-			intervalLoaded: false,
 			urls: [
 				'https://oauth.reddit.com/hot',
 				'https://oauth.reddit.com/new',
@@ -38,21 +34,22 @@ export default {
 				? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
 				: Math.sign(num) * Math.abs(num);
 		},
-		fetchRequests() {
-			this.timeLeft = 20;
-			let that = this;
-			this.refreshTimer = setInterval(function () {
-				if (that.timeLeft > 0) {
-					document.getElementById('countdown').innerHTML =
-						that.timeLeft + ' seconds remaining until refresh';
-				}
-				that.timeLeft -= 1;
-			}, 1000);
+		loadNext() {
+			this.fetchRequests(
+				this.topicResponses[this.topicResponses.length - 1].after
+			);
+		},
+		fetchRequests(after = '') {
+			if (after == '') {
+				this.topicResponses = [];
+			}
 
-			this.topicResponses = [];
 			for (let i = 0; i < this.urls.length; i++) {
 				if (this.currentTopic == this.topics[i]) {
-					API.getTopic(this.urls[i], '?limit=' + localStorage.getItem('limit'))
+					API.getTopic(
+						this.urls[i],
+						'?limit=' + localStorage.getItem('limit') + '&after=' + after
+					)
 						.then((response) => {
 							this.topicResponses.push(response.data.data);
 
@@ -61,7 +58,6 @@ export default {
 							}
 
 							this.responsesLoaded = true;
-							this.intervalLoaded = true;
 						})
 						.catch(function (error) {
 							localStorage.clear();
@@ -78,72 +74,49 @@ export default {
 		processTopic() {
 			this.posts = [];
 
-			this.topicResponses[0].children.map((element) => {
-				let myObj = {};
+			this.topicResponses.map((rootElement) => {
+				rootElement.children.map((element) => {
+					let myObj = {};
 
-				myObj['id'] = element.data.id;
-				myObj['author'] = element.data.author;
-				myObj['num_comments'] = element.data.num_comments;
-				myObj['thumbnail'] =
-					element.data.thumbnail == 'self' ||
-					element.data.thumbnail == 'default' ||
-					element.data.thumbnail == 'nsfw' ||
-					element.data.thumbnail == 'image'
-						? 'default.jpg'
-						: element.data.thumbnail;
-				myObj['title'] =
-					element.data.title.length > 100
-						? element.data.title.slice(0, 100) + '...'
-						: element.data.title;
-				myObj['ups'] = element.data.ups;
-				myObj['url'] = element.data.url;
-				myObj['selftext'] =
-					element.data.selftext == ''
-						? 'No description.'
-						: element.data.selftext.replace('&amp;#x200B;', '').slice(0, 70) +
-						  '...';
+					myObj['id'] = element.data.id;
+					myObj['author'] = element.data.author;
+					myObj['num_comments'] = element.data.num_comments;
+					myObj['thumbnail'] =
+						element.data.thumbnail == 'self' ||
+						element.data.thumbnail == 'default' ||
+						element.data.thumbnail == 'nsfw' ||
+						element.data.thumbnail == 'image'
+							? 'default.jpg'
+							: element.data.thumbnail;
+					myObj['title'] =
+						element.data.title.length > 100
+							? element.data.title.slice(0, 100) + '...'
+							: element.data.title;
+					myObj['ups'] = element.data.ups;
+					myObj['url'] = element.data.url;
+					myObj['selftext'] =
+						element.data.selftext == ''
+							? 'No description.'
+							: element.data.selftext.replace('&amp;#x200B;', '').slice(0, 70) +
+							  '...';
 
-				this.posts.push(myObj);
+					this.posts.push(myObj);
 
-				this.fetchLoaded = true;
+					this.fetchLoaded = true;
+				});
 			});
-
-			//console.log(this.posts);
 		},
 	},
 	created() {
 		this.fetchLoaded = false;
 		this.fetchRequests();
-
-		this.windowInterval = setInterval(() => {
-			clearInterval(this.refreshTimer);
-			this.refreshTimer = null;
-
-			this.fetchRequests();
-		}, 20000);
 	},
-	beforeDestroy() {
-		clearInterval(this.refreshTimer);
-		clearInterval(this.windowInterval);
-		this.refreshTimer = null;
-		this.windowInterval = null;
-	},
+	beforeDestroy() {},
 	watch: {
 		currentTopic: function () {
 			this.fetchLoaded = false;
-			clearInterval(this.refreshTimer);
-			clearInterval(this.windowInterval);
-			this.refreshTimer = null;
-			this.windowInterval = null;
 
 			this.fetchRequests();
-
-			this.windowInterval = setInterval(() => {
-				clearInterval(this.refreshTimer);
-				this.refreshTimer = null;
-
-				this.fetchRequests();
-			}, 20000);
 		},
 
 		responsesLoaded: function () {

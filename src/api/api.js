@@ -71,7 +71,6 @@ const API = {
 				}
 			)
 			.then(function (response) {
-				localStorage.clear();
 				localStorage.setItem('access_token', response.data.access_token);
 				localStorage.setItem('refresh_token', response.data.refresh_token);
 				store.state.tokenStatus = 1;
@@ -79,7 +78,6 @@ const API = {
 				router.push('settings');
 			})
 			.catch(function (error) {
-				localStorage.clear();
 				store.state.tokenStatus = 2;
 
 				console.log(error);
@@ -101,7 +99,6 @@ const API = {
 				store.state.tokenStatus = 1;
 			})
 			.catch(function (error) {
-				localStorage.clear();
 				store.state.tokenStatus = 2;
 
 				console.log(error);

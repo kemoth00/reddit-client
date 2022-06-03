@@ -3,13 +3,6 @@
 		<TopicSelector @TopicChanged="loadTopic" :horizontal="false" />
 		<div class="md:w-1/2 w-full" v-show="fetchLoaded">
 			<TopicSelector @TopicChanged="loadTopic" :horizontal="true" />
-			<div
-				id="countdown"
-				class="bg-white shadow-md p-4 text-center"
-				v-if="intervalLoaded"
-			>
-				20 seconds remaining until refresh
-			</div>
 			<div v-for="item in posts" :key="item.id">
 				<div
 					class="flex flex-row bg-white my-1 h-64 md:h-52 min-h-min shadow-md p-4"
@@ -279,7 +272,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="flex flex-col w-1/4 hidden md:flex">
+					<div class="flex flex-col w-1/4 hidden lg:flex">
 						<div class="h-1/4">
 							<svg
 								width="20px"
@@ -381,6 +374,15 @@
 						</div>
 					</div>
 				</div>
+			</div>
+
+			<div class="w-full text-center">
+				<button
+					class="bg-white text-gray-800 font-bold my-4 py-2 px-4 shadow-md hover:bg-orange-500 transition duration-300"
+					v-on:click="loadNext"
+				>
+					LOAD MORE
+				</button>
 			</div>
 		</div>
 		<div class="w-full md:w-1/2 text-center" v-show="!fetchLoaded">
