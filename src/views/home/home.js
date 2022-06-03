@@ -23,6 +23,7 @@ export default {
 			],
 			fetchLoaded: false,
 			openedComments: [],
+			commentsLoaded: false,
 		};
 	},
 	components: {
@@ -37,11 +38,15 @@ export default {
 		},
 		hideDetails(id) {
 			document.getElementById(id + '-details').classList.toggle('hidden');
+			document.getElementById(id + '-details').removeAttribute('style');
 		},
 		showDetails(id) {
+			this.commentsLoaded = false;
 			this.openedComments = [];
 
+			document.getElementById(id + '-details').removeAttribute('style');
 			document.getElementById(id + '-details').classList.toggle('hidden');
+
 			API.getRequest('comments/' + id, '?limit=10&sort=new&depth=0')
 				.then((response) => {
 					response.data[1].data.children.map((element) => {
@@ -54,7 +59,9 @@ export default {
 						this.openedComments.push(myObj);
 					});
 
-					console.log(this.openedComments);
+					this.commentsLoaded = true;
+					document.getElementById(id + '-details').style.cssText +=
+						'opacity: 1 !important';
 				})
 				.catch(function (error) {
 					console.log(error);
