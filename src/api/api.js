@@ -12,15 +12,15 @@ const headers = {
 };
 
 const API = {
-	getRequest(url) {
-		return axios.get('https://oauth.reddit.com/' + url, {
+	getRequest(url, options = '') {
+		return axios.get('https://oauth.reddit.com/' + url + options, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				Authorization: 'Bearer ' + localStorage.getItem('access_token'),
 			},
 		});
 	},
-	getTopic(url, options) {
+	getTopic(url, options = '') {
 		return axios.get(url + options, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',

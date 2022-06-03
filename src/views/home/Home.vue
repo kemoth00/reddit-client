@@ -5,7 +5,9 @@
 			<TopicSelector @TopicChanged="loadTopic" :horizontal="true" />
 			<div v-for="item in posts" :key="item.id">
 				<div
-					class="flex flex-row bg-white my-1 h-64 md:h-52 min-h-min shadow-md p-4"
+					:id="item.id"
+					class="flex flex-row bg-white my-1 h-64 md:h-52 min-h-min shadow-md p-4 cursor-pointer"
+					@click="showDetails(item.id)"
 				>
 					<div class="flex flex-col w-11/12 md:w-3/4 md:mr-10">
 						<div class="h-1/4">
@@ -374,6 +376,20 @@
 						</div>
 					</div>
 				</div>
+				<div
+					:id="item.id + '-details'"
+					class="bg-white my-1 h-fit shadow-md p-4 cursor-pointer hidden"
+					@click="hideDetails(item.id)"
+				>
+					<h3 class="font-bold underline mb-2">Article:</h3>
+					{{ item.selftextFull }}
+					<h3 class="font-bold underline mt-2">Comments:</h3>
+					<div v-for="comment in openedComments" :key="comment.id" class="mb-2">
+						<span class="font-bold">{{ comment.author }}</span>
+						<br />
+						<span>{{ comment.body }}</span>
+					</div>
+				</div>
 			</div>
 
 			<div class="w-full text-center">
@@ -385,6 +401,7 @@
 				</button>
 			</div>
 		</div>
+
 		<div class="w-full md:w-1/2 text-center" v-show="!fetchLoaded">
 			<svg
 				role="status"

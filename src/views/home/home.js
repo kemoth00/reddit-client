@@ -22,6 +22,7 @@ export default {
 				'https://oauth.reddit.com/top',
 			],
 			fetchLoaded: false,
+			openedComments: [],
 		};
 	},
 	components: {
@@ -33,6 +34,31 @@ export default {
 			return Math.abs(num) > 999
 				? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
 				: Math.sign(num) * Math.abs(num);
+		},
+		hideDetails(id) {
+			document.getElementById(id + '-details').classList.toggle('hidden');
+		},
+		showDetails(id) {
+			this.openedComments = [];
+
+			document.getElementById(id + '-details').classList.toggle('hidden');
+			API.getRequest('comments/' + id, '?limit=10&sort=new&depth=0')
+				.then((response) => {
+					response.data[1].data.children.map((element) => {
+						let myObj = {};
+
+						myObj['id'] = element.data.id;
+						myObj['author'] = element.data.author;
+						myObj['body'] = element.data.body;
+
+						this.openedComments.push(myObj);
+					});
+
+					console.log(this.openedComments);
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
 		},
 		loadNext() {
 			this.fetchRequests(
@@ -90,15 +116,19 @@ export default {
 							: element.data.thumbnail;
 					myObj['title'] =
 						element.data.title.length > 100
-							? element.data.title.slice(0, 100) + '...'
+							? element.data.title.slice(0, 80) + '...'
 							: element.data.title;
 					myObj['ups'] = element.data.ups;
-					myObj['url'] = element.data.url;
 					myObj['selftext'] =
 						element.data.selftext == ''
-							? 'No description.'
+							? element.data.url.slice(0, 70)
 							: element.data.selftext.replace('&amp;#x200B;', '').slice(0, 70) +
 							  '...';
+
+					myObj['selftextFull'] =
+						element.data.selftext == ''
+							? element.data.url
+							: element.data.selftext.replace('&amp;#x200B;', '');
 
 					this.posts.push(myObj);
 
