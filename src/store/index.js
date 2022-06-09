@@ -4,7 +4,10 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-	state: {},
+	state: {
+		tokenStatus: 0,
+		currentTopic: 'hot',
+	},
 	getters: {},
 	mutations: {},
 	actions: {},

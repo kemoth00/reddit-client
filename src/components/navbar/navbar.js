@@ -3,7 +3,11 @@
 export default {
 	name: 'Navbar',
 	props: {},
-	computed: {},
+	computed: {
+		currentRouteName() {
+			return this.$route.name;
+		},
+	},
 	data() {
 		return {};
 	},
@@ -11,7 +15,14 @@ export default {
 		//API,
 	},
 	methods: {},
-	mounted() {},
+	mounted() {
+		const btn = document.querySelector('button.mobile-menu-button');
+		const menu = document.querySelector('.mobile-menu');
+
+		btn.addEventListener('click', () => {
+			menu.classList.toggle('hidden');
+		});
+	},
 	destroyed() {},
 	watch: {},
 };
